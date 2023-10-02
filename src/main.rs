@@ -12,8 +12,21 @@ impl Square {
         Square { x, y, size, color }
     }
 
-    fn draw(&self) {
+    fn draw(&self, font: &Font) {
         draw_rectangle(self.x, self.y, self.size, self.size, self.color);
+        draw_text_ex(
+            "1",
+            self.x + self.size/3.75,
+            self.y - self.size/2.75,
+            TextParams {
+                font: Some(font),
+                font_size: 24,
+                font_scale: 1.0,
+                font_scale_aspect: 1.0, // Added this parameter
+                rotation: 0.0, // Added this parameter
+                color: BLACK,
+            },
+        );
     }
 
     fn is_mouse_over(&self) -> bool {
@@ -25,6 +38,7 @@ impl Square {
 
 #[macroquad::main("Clickable Squares")]
 async fn main() {
+    let font = load_ttf_font("./res/NotoSansMono-Medium.ttf").await.unwrap();
     let mut squares = Vec::new();
     let square_size = 30.0;
     let gap = 5.0;
@@ -45,7 +59,7 @@ async fn main() {
         clear_background(BLACK);
 
         for square in squares.iter_mut() {
-            square.draw();
+            square.draw(&font);
             if is_mouse_button_down(MouseButton::Left) && square.is_mouse_over() {
                 square.color = RED;
             }
