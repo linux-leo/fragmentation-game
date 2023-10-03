@@ -64,7 +64,7 @@ async fn main() {
     for i in 0..grid_size {
         for j in 0..grid_size {
             let x = ((screen_width() - tablesize) / 2.0) + j as f32 * (square_size + gap);
-            let y = ((screen_height() - tablesize) / 1.75) + i as f32 * (square_size + gap);
+            let y = ((screen_height() - tablesize  + 45.0) / 2.0) + i as f32 * (square_size + gap);
             squares.push(Square::new(x, y, square_size, WHITE, false, 0));
         }
     }
