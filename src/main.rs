@@ -1,4 +1,5 @@
 use macroquad::{prelude::*, ui};
+use std::cmp;
 
 enum GameState {
     StartMenu,
@@ -19,7 +20,7 @@ impl Square {
         Square { x, y, size, color, active, number }
     }
 
-    fn draw(&self, font: &Font) {
+    fn draw(&self, font: &Font, scalingfactor: &f32) {
         draw_rectangle(self.x, self.y, self.size, self.size, self.color);
         if self.active {
         draw_text_ex(
@@ -28,7 +29,7 @@ impl Square {
             self.y + self.size*0.8,
             TextParams {
                 font: Some(font),
-                font_size: ((30.0 / 355.0) * screen_width() * 0.8) as u16,
+                font_size: ((30.0 / 355.0) * scalingfactor * 0.8) as u16,
                 font_scale: 1.0,
                 font_scale_aspect: 1.0, // Added this parameter
                 rotation: 0.0, // Added this parameter
@@ -52,16 +53,20 @@ async fn main() {
     let mut squares = Vec::new();
     set_fullscreen(true);
     next_frame().await;
-    let square_size = (30.0 / 355.0) * screen_width();
-    let gap = (5.0 / 355.0) * screen_width();
+    let scalingfactor = cmp::min(screen_width() as i32, screen_height() as i32) as f32;
+    let square_size = (30.0 / 360.0) * scalingfactor;
+    let gap = (5.0 / 360.0) * scalingfactor;
     let grid_size = 10;
+    let tablesize = square_size*grid_size as f32 + gap*(grid_size - 1) as f32;
+    let startx = (screen_width()/2.0 - tablesize/2.0);
+    let starty = (screen_height()/2.0 - tablesize/2.0);
     let mut counter: u8 = 0;
     let mut game_state = GameState::StartMenu;
     // Initialize the squares grid
     for i in 0..grid_size {
         for j in 0..grid_size {
-            let x = gap + j as f32 * (square_size + gap);
-            let y = gap + i as f32 * (square_size + gap);
+            let x = startx + j as f32 * (square_size + gap);
+            let y = starty + i as f32 * (square_size + gap);
             squares.push(Square::new(x, y, square_size, WHITE, false, 0));
         }
     }
@@ -138,7 +143,7 @@ async fn main() {
             }
             GameState::Game => {
                 for square in squares.iter_mut() {
-                    square.draw(&font);
+                    square.draw(&font, &scalingfactor);
                     if is_mouse_button_pressed(MouseButton::Left) && square.is_mouse_over() && square.active == false  {
                         square.color = RED;
                         square.active = true;
