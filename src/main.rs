@@ -48,26 +48,14 @@ impl Square {
 
 #[macroquad::main("Clickable Squares")]
 async fn main() {
-    let fontdir = include_bytes!("../res/NotoSansMono-Medium.ttf");
-    let font = load_ttf_font_from_bytes(fontdir).unwrap();
-    let mut squares = Vec::new();
     set_fullscreen(true);
     next_frame().await;
-    let scalingfactor = cmp::min(screen_width() as i32, screen_height() as i32) as f32;
-    let square_size = (30.0 / 360.0) * scalingfactor;
-    let gap = (5.0 / 360.0) * scalingfactor;
-    let grid_size = 10;
-    let tablesize = square_size*grid_size as f32 + gap*(grid_size - 1) as f32;
+    let fontdir = include_bytes!("../res/NotoSansMono-Medium.ttf");
+    let font = load_ttf_font_from_bytes(fontdir).unwrap();
+    let mut scalingfactor = 0.0;
+    let mut squares = Vec::new();
     let mut counter: u8 = 0;
     let mut game_state = GameState::StartMenu;
-    // Initialize the squares grid
-    for i in 0..grid_size {
-        for j in 0..grid_size {
-            let x = ((screen_width() - tablesize) / 2.0) + j as f32 * (square_size + gap);
-            let y = ((screen_height() - tablesize  + 45.0) / 2.0) + i as f32 * (square_size + gap);
-            squares.push(Square::new(x, y, square_size, WHITE, false, 0));
-        }
-    }
     loop {
         clear_background(BLACK);
         match game_state {
@@ -136,7 +124,18 @@ async fn main() {
                 ui::root_ui().label(Some(label_pos), game_name);
                 if ui::root_ui().button(Some(button_pos), button_text) {
                     game_state = GameState::Game;
-//                    request_new_screen_size(355.0, 355.0);
+                    scalingfactor = cmp::min(screen_width() as i32, screen_height() as i32) as f32;
+                    let square_size = (30.0 / 360.0) * scalingfactor;
+                    let gap = (5.0 / 360.0) * scalingfactor;
+                    let grid_size = 10;
+                    let tablesize = square_size*grid_size as f32 + gap*(grid_size - 1) as f32;
+                    for i in 0..grid_size {
+                        for j in 0..grid_size {
+                            let x = ((screen_width() - tablesize) / 2.0) + j as f32 * (square_size + gap);
+                            let y = ((screen_height() - tablesize) / 2.0) + i as f32 * (square_size + gap);
+                            squares.push(Square::new(x, y, square_size, WHITE, false, 0));
+                        }
+                    }
                 }
             }
             GameState::Game => {
