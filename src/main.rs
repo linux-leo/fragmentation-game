@@ -58,15 +58,13 @@ async fn main() {
     let gap = (5.0 / 360.0) * scalingfactor;
     let grid_size = 10;
     let tablesize = square_size*grid_size as f32 + gap*(grid_size - 1) as f32;
-    let startx = (screen_width()/2.0 - tablesize/2.0);
-    let starty = (screen_height()/2.0 - tablesize/2.0);
     let mut counter: u8 = 0;
     let mut game_state = GameState::StartMenu;
     // Initialize the squares grid
     for i in 0..grid_size {
         for j in 0..grid_size {
-            let x = startx + j as f32 * (square_size + gap);
-            let y = starty + i as f32 * (square_size + gap);
+            let x = ((screen_width() - tablesize) / 2.0) + j as f32 * (square_size + gap);
+            let y = ((screen_height() - tablesize) / 1.75) + i as f32 * (square_size + gap);
             squares.push(Square::new(x, y, square_size, WHITE, false, 0));
         }
     }
