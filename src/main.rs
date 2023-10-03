@@ -53,16 +53,14 @@ async fn main() {
     let square_size = 30.0;
     let gap = 5.0;
     let grid_size = 10;
-    let start_x = 100.0;
-    let start_y = 100.0;
     let mut counter: u8 = 0;
     let mut game_state = GameState::StartMenu;
 
     // Initialize the squares grid
     for i in 0..grid_size {
         for j in 0..grid_size {
-            let x = start_x + j as f32 * (square_size + gap);
-            let y = start_y + i as f32 * (square_size + gap);
+            let x = gap + j as f32 * (square_size + gap);
+            let y = gap + i as f32 * (square_size + gap);
             squares.push(Square::new(x, y, square_size, WHITE, false, 0));
         }
     }
@@ -125,11 +123,11 @@ async fn main() {
                 let button_center = get_text_center(button_text, Option::None, 40, 1.0, 0.0);
                 let title_center = get_text_center(game_name, Option::None, 25, 1.0, 0.0);
                 let button_pos = vec2(
-                    (screen_width()*0.95 / 2.0) - 20.0 - button_center.x,
+                    (screen_width()*0.933 / 2.0) - 15.0 - button_center.x,
                     screen_height() / 2.0,
                 );
                 let label_pos = vec2(
-                    (screen_width()*0.95 / 2.0) - 20.0 - title_center.x,
+                    (screen_width()*0.933 / 2.0) - 15.0 - title_center.x,
                     button_pos.y - 100.0,
                 );
                 ui::root_ui().label(Some(label_pos), game_name);
