@@ -120,20 +120,20 @@ async fn main() {
                     }
                 };
                 ui::root_ui().push_skin(&skin);
-                let GameName = "Fragmentator";
-                let ButtonText = "Play";
-                let ButtonCenter = get_text_center(ButtonText, Option::None, 40, 1.0, 0.0);
-                let TitleCenter = get_text_center(GameName, Option::None, 25, 1.0, 0.0);
+                let game_name = "Fragmentator";
+                let button_text = "Play";
+                let button_center = get_text_center(button_text, Option::None, 40, 1.0, 0.0);
+                let title_center = get_text_center(game_name, Option::None, 25, 1.0, 0.0);
                 let button_pos = vec2(
-                    (screen_width()*0.95 / 2.0) - 20.0 - ButtonCenter.x,
+                    (screen_width()*0.95 / 2.0) - 20.0 -  button_center.x,
                     screen_height() / 2.0,
                 );
                 let label_pos = vec2(
-                    (screen_width()*0.95 / 2.0) - 20.0 - TitleCenter.x,
+                    (screen_width()*0.95 / 2.0) - 20.0 - title_center.x,
                     button_pos.y - 100.0,
                 );
-                ui::root_ui().label(Some(label_pos), "Fragmentator");
-                if ui::root_ui().button(Some(button_pos), "Play") {
+                ui::root_ui().label(Some(label_pos), game_name);
+                if ui::root_ui().button(Some(button_pos), button_text) {
                     game_state = GameState::Game;
                 }
             }
