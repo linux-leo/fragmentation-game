@@ -49,7 +49,6 @@ impl Square {
 #[macroquad::main("Clickable Squares")]
 async fn main() {
     set_fullscreen(true);
-    next_frame().await;
     let fontdir = include_bytes!("../res/NotoSansMono-Medium.ttf");
     let font = load_ttf_font_from_bytes(fontdir).unwrap();
     let mut scalingfactor = 0.0;
