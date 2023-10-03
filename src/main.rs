@@ -125,7 +125,7 @@ async fn main() {
                 let button_center = get_text_center(button_text, Option::None, 40, 1.0, 0.0);
                 let title_center = get_text_center(game_name, Option::None, 25, 1.0, 0.0);
                 let button_pos = vec2(
-                    (screen_width()*0.95 / 2.0) - 20.0 -  button_center.x,
+                    (screen_width()*0.95 / 2.0) - 20.0 - button_center.x,
                     screen_height() / 2.0,
                 );
                 let label_pos = vec2(
