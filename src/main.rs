@@ -1,4 +1,9 @@
-use macroquad::prelude::*;
+use macroquad::{prelude::*, ui};
+
+enum GameState {
+    StartMenu,
+    Game,
+}
 
 struct Square {
     x: f32,
@@ -42,7 +47,8 @@ impl Square {
 
 #[macroquad::main("Clickable Squares")]
 async fn main() {
-    let font = load_ttf_font("./res/NotoSansMono-Medium.ttf").await.unwrap();
+    let fontdir = include_bytes!("../res/NotoSansMono-Medium.ttf");
+    let font = load_ttf_font_from_bytes(fontdir).unwrap();
     let mut squares = Vec::new();
     let square_size = 30.0;
     let gap = 5.0;
@@ -50,6 +56,7 @@ async fn main() {
     let start_x = 100.0;
     let start_y = 100.0;
     let mut counter: u8 = 0;
+    let mut game_state = GameState::StartMenu;
 
     // Initialize the squares grid
     for i in 0..grid_size {
@@ -62,21 +69,81 @@ async fn main() {
 
     loop {
         clear_background(BLACK);
-
-        for square in squares.iter_mut() {
-            square.draw(&font);
-            if is_mouse_button_pressed(MouseButton::Left) && square.is_mouse_over() && square.active == false  {
-                square.color = RED;
-                square.active = true;
-                square.number = counter;
-                if counter < 9 {
-                    counter += 1;
-                } else {
-                    counter = 0;
+        match game_state {
+            GameState::StartMenu => {
+                let skin = {
+                    let label_style = ui::root_ui()
+                        .style_builder()
+                        .font(fontdir)
+                        .unwrap()
+                        .text_color(Color::from_rgba(180, 180, 100, 255))
+                        .font_size(25)
+                        .build();
+            
+                    let button_style = ui::root_ui()
+                        .style_builder()
+                        .background(
+                            Image::from_file_with_format(
+                                include_bytes!("../res/button_background.png"),
+                                None,
+                            )
+                            .unwrap(),
+                        )
+                        .background_margin(RectOffset::new(8.0, 8.0, 8.0, 8.0))
+                        .background_hovered(
+                            Image::from_file_with_format(
+                                include_bytes!("../res/button_hovered_background.png"),
+                                None,
+                            )
+                            .unwrap(),
+                        )
+                        .background_clicked(
+                            Image::from_file_with_format(
+                                include_bytes!("../res/button_clicked_background.png"),
+                                None,
+                            )
+                            .unwrap(),
+                        )
+                        .font(fontdir)
+                        .unwrap()
+                        .text_color(Color::from_rgba(180, 180, 100, 255))
+                        .text_color_hovered(Color::from_rgba(180, 180, 100, 255))
+                        .text_color_clicked(Color::from_rgba(180, 180, 100, 255))
+                        .font_size(40)
+                        .build();
+            
+            
+                    ui::Skin {
+                        button_style,
+                        label_style,
+                        ..ui::root_ui().default_skin()
+                    }
+                };
+                ui::root_ui().push_skin(&skin);
+                let button_pos = vec2(
+                    screen_width() / 2.0,
+                    screen_height() / 2.0,
+                );
+                if ui::root_ui().button(Some(button_pos), "Play") {
+                    game_state = GameState::Game;
+                }
+            }
+            GameState::Game => {
+                for square in squares.iter_mut() {
+                    square.draw(&font);
+                    if is_mouse_button_pressed(MouseButton::Left) && square.is_mouse_over() && square.active == false  {
+                        square.color = RED;
+                        square.active = true;
+                        square.number = counter;
+                        if counter < 9 {
+                            counter += 1;
+                        } else {
+                            counter = 0;
+                        }
+                    }
                 }
             }
         }
-
         next_frame().await;
     }
 }
