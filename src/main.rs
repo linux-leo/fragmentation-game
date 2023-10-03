@@ -106,9 +106,9 @@ async fn main() {
                         )
                         .font(fontdir)
                         .unwrap()
-                        .text_color(Color::from_rgba(180, 180, 100, 255))
-                        .text_color_hovered(Color::from_rgba(180, 180, 100, 255))
-                        .text_color_clicked(Color::from_rgba(180, 180, 100, 255))
+                        .text_color(Color::from_rgba(255, 255, 255, 255))
+                        .text_color_hovered(Color::from_rgba(192, 192, 255, 255))
+                        .text_color_clicked(Color::from_rgba(32, 24, 64, 255))
                         .font_size(40)
                         .build();
             
@@ -120,10 +120,19 @@ async fn main() {
                     }
                 };
                 ui::root_ui().push_skin(&skin);
+                let GameName = "Fragmentator";
+                let ButtonText = "Play";
+                let ButtonCenter = get_text_center(ButtonText, Option::None, 40, 1.0, 0.0);
+                let TitleCenter = get_text_center(GameName, Option::None, 25, 1.0, 0.0);
                 let button_pos = vec2(
-                    screen_width() / 2.0,
+                    (screen_width()*0.95 / 2.0) - 20.0 - ButtonCenter.x,
                     screen_height() / 2.0,
                 );
+                let label_pos = vec2(
+                    (screen_width()*0.95 / 2.0) - 20.0 - TitleCenter.x,
+                    button_pos.y - 100.0,
+                );
+                ui::root_ui().label(Some(label_pos), "Fragmentator");
                 if ui::root_ui().button(Some(button_pos), "Play") {
                     game_state = GameState::Game;
                 }
