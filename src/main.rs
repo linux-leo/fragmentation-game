@@ -28,7 +28,7 @@ impl Square {
             self.y + self.size*0.8,
             TextParams {
                 font: Some(font),
-                font_size: 24,
+                font_size: ((30.0 / 355.0) * screen_width() * 0.8) as u16,
                 font_scale: 1.0,
                 font_scale_aspect: 1.0, // Added this parameter
                 rotation: 0.0, // Added this parameter
@@ -50,12 +50,13 @@ async fn main() {
     let fontdir = include_bytes!("../res/NotoSansMono-Medium.ttf");
     let font = load_ttf_font_from_bytes(fontdir).unwrap();
     let mut squares = Vec::new();
-    let square_size = 30.0;
-    let gap = 5.0;
+    set_fullscreen(true);
+    next_frame().await;
+    let square_size = (30.0 / 355.0) * screen_width();
+    let gap = (5.0 / 355.0) * screen_width();
     let grid_size = 10;
     let mut counter: u8 = 0;
     let mut game_state = GameState::StartMenu;
-
     // Initialize the squares grid
     for i in 0..grid_size {
         for j in 0..grid_size {
@@ -64,7 +65,6 @@ async fn main() {
             squares.push(Square::new(x, y, square_size, WHITE, false, 0));
         }
     }
-
     loop {
         clear_background(BLACK);
         match game_state {
@@ -123,16 +123,17 @@ async fn main() {
                 let button_center = get_text_center(button_text, Option::None, 40, 1.0, 0.0);
                 let title_center = get_text_center(game_name, Option::None, 25, 1.0, 0.0);
                 let button_pos = vec2(
-                    (screen_width()*0.933 / 2.0) - 15.0 - button_center.x,
+                    (screen_width()*0.95 / 2.0) - 10.0 - button_center.x,
                     screen_height() / 2.0,
                 );
                 let label_pos = vec2(
-                    (screen_width()*0.933 / 2.0) - 15.0 - title_center.x,
+                    (screen_width()*0.95 / 2.0) - 10.0 - title_center.x,
                     button_pos.y - 100.0,
                 );
                 ui::root_ui().label(Some(label_pos), game_name);
                 if ui::root_ui().button(Some(button_pos), button_text) {
                     game_state = GameState::Game;
+//                    request_new_screen_size(355.0, 355.0);
                 }
             }
             GameState::Game => {
